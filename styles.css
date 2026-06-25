@@ -372,6 +372,14 @@ button { cursor: pointer; font-family: inherit; }
 .course-card p { font-size: .85rem; opacity: .82; line-height: 1.6; margin-bottom: 18px; }
 .course-fee { font-family: 'Sora',sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--kenya-green2); margin-bottom: 18px; }
 .course-fee span { font-size: .78rem; opacity: .7; font-weight: 400; font-family: 'Inter',sans-serif; }
+.course-nexus-badge {
+  font-size: .72rem; font-weight: 700; color: var(--kenya-green2);
+  background: rgba(0,136,68,.15); border-radius: 4px;
+  padding: 4px 10px; margin-bottom: 14px;
+  display: inline-flex; align-items: center; gap: 5px;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+
 .course-btn {
   background: var(--kenya-green); color: var(--kenya-white); border: none;
   padding: 11px 22px; border-radius: 7px; font-weight: 800; font-size: .88rem;

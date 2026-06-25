@@ -80,8 +80,8 @@
         <button onclick="openService('helb')" class="qbtn"><i class="fas fa-graduation-cap"></i>HELB Services</button>
         <button onclick="openService('kuccps')" class="qbtn"><i class="fas fa-school"></i>KUCCPS Services</button>
         <button onclick="openService('kmtc')" class="qbtn"><i class="fas fa-hospital"></i>KMTC Applications</button>
-        <button onclick="openService('kra')" class="qbtn"><i class="fas fa-receipt"></i>KRA Services</button>
-        <button onclick="openService('documents')" class="qbtn"><i class="fas fa-file-alt"></i>Student Documents</button>
+        <button onclick="openService('kra-pin')" class="qbtn"><i class="fas fa-receipt"></i>KRA Services</button>
+        <button onclick="openService('single-parent')" class="qbtn"><i class="fas fa-file-alt"></i>Student Documents</button>
         <button onclick="openService('courses')" class="qbtn"><i class="fas fa-laptop-code"></i>Online Classes</button>
       </div>
 
@@ -117,7 +117,7 @@
       <div class="trust-card">
         <div class="trust-icon"><i class="fas fa-lock"></i></div>
         <div>
-          <strong>Secure & Confidential</strong>
+          <strong>Secure &amp; Confidential</strong>
           <span>Personal information stays private.</span>
         </div>
       </div>
@@ -293,7 +293,7 @@
           <div class="service-card free-card">
             <div class="card-badge free-badge">FREE</div>
             <div class="card-icon"><i class="fas fa-compass"></i></div>
-            <h4>Student Career & Bursary Guidance</h4>
+            <h4>Student Career &amp; Bursary Guidance</h4>
             <p>Get free guidance on bursaries, scholarships, government grants, and career pathways available for Kenyan students.</p>
             <div class="card-meta"><i class="fas fa-clock"></i>On Request<span class="divider">|</span><i class="fas fa-gift"></i>No Charge</div>
             <button class="card-btn" onclick="openService('free-guidance')">Get Guidance <i class="fas fa-arrow-right"></i></button>
@@ -308,10 +308,12 @@
     <div class="container">
       <div class="section-head light">
         <span class="eyebrow">Upskill Online</span>
-        <h2>Computer & IT Online Courses</h2>
+        <h2>Computer &amp; IT Online Courses</h2>
         <p>Earn a certificate from anywhere in Kenya. Pay only after you enrol and begin learning.</p>
       </div>
       <div class="courses-grid">
+
+        <!-- Computer Packages — WhatsApp form -->
         <div class="course-card" onclick="openService('courses')">
           <div class="course-icon"><i class="fas fa-desktop"></i></div>
           <h4>Computer Packages</h4>
@@ -319,27 +321,37 @@
           <div class="course-fee">Ksh 999 <span>per course</span></div>
           <button class="course-btn">Enrol Now</button>
         </div>
-        <div class="course-card" onclick="openService('courses')">
+
+        <!-- Web Development — Nexus Academy -->
+        <div class="course-card" onclick="openService('web-development')">
           <div class="course-icon"><i class="fas fa-code"></i></div>
           <h4>Web Development</h4>
           <p>Build modern websites using HTML, CSS, JavaScript, and popular frameworks. Certificate awarded on completion.</p>
-          <div class="course-fee">Ksh 5000 <span>per course</span></div>
+          <div class="course-fee">Ksh 5,000 <span>per course</span></div>
+          <div class="course-nexus-badge"><i class="fas fa-external-link-alt"></i> Hosted on Nexus Academy</div>
           <button class="course-btn">Enrol Now</button>
         </div>
-        <div class="course-card" onclick="openService('courses')">
+
+        <!-- Graphic Design — Nexus Academy -->
+        <div class="course-card" onclick="openService('graphic-design')">
           <div class="course-icon"><i class="fas fa-palette"></i></div>
           <h4>Graphic Design</h4>
           <p>Learn design tools including Canva, Photoshop basics, and visual communication for business.</p>
-          <div class="course-fee">Ksh 3000 <span>per course</span></div>
+          <div class="course-fee">Ksh 3,000 <span>per course</span></div>
+          <div class="course-nexus-badge"><i class="fas fa-external-link-alt"></i> Hosted on Nexus Academy</div>
           <button class="course-btn">Enrol Now</button>
         </div>
-        <div class="course-card" onclick="openService('courses')">
+
+        <!-- Cybersecurity — Nexus Academy -->
+        <div class="course-card" onclick="openService('cybersecurity')">
           <div class="course-icon"><i class="fas fa-shield-alt"></i></div>
           <h4>Cybersecurity</h4>
           <p>Understand digital safety, ethical hacking basics, and how to protect systems and personal data.</p>
-          <div class="course-fee">Ksh 10000 <span>per course</span></div>
+          <div class="course-fee">Ksh 10,000 <span>per course</span></div>
+          <div class="course-nexus-badge"><i class="fas fa-external-link-alt"></i> Hosted on Nexus Academy</div>
           <button class="course-btn">Enrol Now</button>
         </div>
+
       </div>
     </div>
   </section>
@@ -349,15 +361,15 @@
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Free Resources</span>
-        <h2>Student Tools & Finders</h2>
-        <p>Use our free tools to explore university and TVET courses that you qualify for according to your kcse grade.</p>
+        <h2>Student Tools &amp; Finders</h2>
+        <p>Use our free tools to explore university and TVET courses that you qualify for according to your KCSE grade.</p>
       </div>
       <div class="tools-grid">
         <a href="https://Smartfuture254career.vercel.app" target="_blank" class="tool-card">
           <div class="tool-icon"><i class="fas fa-university"></i></div>
           <div class="tool-info">
             <h4>University Course Finder</h4>
-            <p>Browse thousands of university degree programmes, entry requirements, and career pathways you can take according to your kcse grade.</p>
+            <p>Browse thousands of university degree programmes, entry requirements, and career pathways you can take according to your KCSE grade.</p>
             <span class="tool-link">Open Tool <i class="fas fa-external-link-alt"></i></span>
           </div>
         </a>
@@ -365,7 +377,7 @@
           <div class="tool-icon"><i class="fas fa-tools"></i></div>
           <div class="tool-info">
             <h4>TVET &amp; KMTC Course Finder</h4>
-            <p>Find diploma and certificate courses at TVET institutions and KMTC campuses that you qualify for according to your kcse grade across Kenya.</p>
+            <p>Find diploma and certificate courses at TVET institutions and KMTC campuses that you qualify for according to your KCSE grade across Kenya.</p>
             <span class="tool-link">Open Tool <i class="fas fa-external-link-alt"></i></span>
           </div>
         </a>
@@ -414,58 +426,28 @@
       </div>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            When do I pay?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>You pay only after your service has been completed successfully. We will notify you via WhatsApp once done, and you can then make payment through the agreed method.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">When do I pay?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>You pay only after your service has been completed successfully. We will notify you via WhatsApp once done, and you can then make payment through the agreed method.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Do I pay before service?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>No. We operate strictly on a pay-after-service model. This is our commitment to protecting students from online scammers and building genuine trust.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">Do I pay before service?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No. We operate strictly on a pay-after-service model. This is our commitment to protecting students from online scammers and building genuine trust.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How long does processing take?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>Most services are completed within 1–2 hours of receiving your details. KRA nil returns and admission letter downloads take under 30 minutes. HELB and KMTC applications are handled within 1–2 hours. We will always confirm with you via WhatsApp once done.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">How long does processing take?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Most services are completed within 1–2 hours of receiving your details. KRA nil returns and admission letter downloads take under 30 minutes. HELB and KMTC applications are handled within 1–2 hours. We will always confirm with you via WhatsApp once done.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Are KUCCPS charges included in your fee?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>No. The KUCCPS government fee (Ksh 1,550 for new applications, Ksh 1,000 for transfers) is paid directly by the student via eCitizen or KUCCPS portal. Our service fee (Ksh 500) is separate and charged only after we complete the application on your behalf.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">Are KUCCPS charges included in your fee?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No. The KUCCPS government fee (Ksh 1,550 for new applications, Ksh 1,000 for transfers) is paid directly by the student via eCitizen or KUCCPS portal. Our service fee (Ksh 500) is separate and charged only after we complete the application on your behalf.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How will I submit my documents?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>After submitting your application form, you will be redirected to WhatsApp where you can share your details and documents directly with our team. We do not ask you to upload any documents on this website.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">How will I submit my documents?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>After submitting your application form, you will be redirected to WhatsApp where you can share your details and documents directly with our team. We do not ask you to upload any documents on this website.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How will I know my application is completed?
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <div class="faq-a">
-            <p>Our team will send you a WhatsApp confirmation message with proof of completion (screenshot or confirmation number) before requesting payment. You only pay when you are satisfied.</p>
-          </div>
+          <button class="faq-q" onclick="toggleFaq(this)">How will I know my application is completed?<i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Our team will send you a WhatsApp confirmation message with proof of completion (screenshot or confirmation number) before requesting payment. You only pay when you are satisfied.</p></div>
         </div>
       </div>
     </div>
@@ -476,9 +458,7 @@
     <div class="container">
       <div class="wa-channel-card">
         <div class="wa-channel-left">
-          <div class="wa-channel-icon">
-            <i class="fab fa-whatsapp"></i>
-          </div>
+          <div class="wa-channel-icon"><i class="fab fa-whatsapp"></i></div>
           <div class="wa-channel-text">
             <span class="wa-channel-label">Official WhatsApp Channel</span>
             <h2>Join Our Student Community</h2>
@@ -505,8 +485,8 @@
               </div>
             </div>
             <div class="wa-preview-messages">
-              <div class="wa-msg">HELB applications for 2026/2027 will open early July. prepare early.</div>
-              <div class="wa-msg">KUCCPS placement results will be released early july and inter instution transfers will be opened.</div>
+              <div class="wa-msg">HELB applications for 2026/2027 will open early July. Prepare early.</div>
+              <div class="wa-msg">KUCCPS placement results will be released early July and inter-institution transfers will be opened.</div>
               <div class="wa-msg">Free guidance session this Saturday. WhatsApp us to book your slot.</div>
             </div>
             <div class="wa-preview-footer">

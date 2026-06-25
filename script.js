@@ -110,8 +110,21 @@ window.addEventListener('scroll', () => {
     window.scrollY > 10 ? '0 4px 24px rgba(26,122,63,.15)' : '';
 });
 
+/* ─── NEXUS ACADEMY COURSES ──────────────────── */
+const NEXUS_URL = 'https://nexus-academy-q6t2.onrender.com/';
+const NEXUS_COURSES = ['web-development', 'graphic-design', 'cybersecurity'];
+
+function openCourse(courseId) {
+  window.open(NEXUS_URL, '_blank');
+}
+
 /* ─── MODAL SYSTEM ───────────────────────────── */
 function openService(id) {
+  // Redirect these three straight to Nexus Academy
+  if (NEXUS_COURSES.includes(id)) {
+    window.open(NEXUS_URL, '_blank');
+    return;
+  }
   const config = getServiceConfig(id);
   if (!config) return;
   document.getElementById('modalContent').innerHTML = buildModalHTML(config);
