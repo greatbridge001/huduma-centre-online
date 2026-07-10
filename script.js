@@ -6,12 +6,46 @@
 const PRIMARY_WA   = '254769642043';
 const SECONDARY_WA = '254711416574';
 
+/* ─── WHATSAPP SOURCE TRACKING ───────────────────
+   Share links like:
+   yourdomain.com/?wa=1   -> routes back to PRIMARY_WA   (0769642043)
+   yourdomain.com/?wa=2   -> routes back to SECONDARY_WA (0711416574)
+   The chosen number is remembered (localStorage) so that even if the
+   student browses several sections before submitting, their completed
+   form still goes back to whichever WhatsApp chat they came from.
+   If no ?wa= param was ever seen, PRIMARY_WA is used as default.
+================================================== */
+const WA_SOURCE_MAP = { '1': PRIMARY_WA, '2': SECONDARY_WA };
+const WA_STORAGE_KEY = 'gb_active_wa_number';
+
+(function captureWaSource() {
+  const params = new URLSearchParams(window.location.search);
+  const waParam = params.get('wa');
+  if (waParam && WA_SOURCE_MAP[waParam]) {
+    localStorage.setItem(WA_STORAGE_KEY, WA_SOURCE_MAP[waParam]);
+  }
+})();
+
+function getActiveWaNumber() {
+  return localStorage.getItem(WA_STORAGE_KEY) || PRIMARY_WA;
+}
+
+/* Keep the floating button + contact/footer WhatsApp links pointed at
+   whichever number the student arrived through. */
+function syncWaLinks() {
+  const num = getActiveWaNumber();
+  document.querySelectorAll('[data-wa-link]').forEach(a => {
+    a.href = `https://wa.me/${num}`;
+  });
+}
+
 /* ─── LOADER ───────────────────────────────────── */
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('loader').classList.add('hidden');
     initScrollReveal();
   }, 1800);
+  syncWaLinks();
 });
 
 /* ─── HAMBURGER / MOBILE NAV ───────────────────── */
@@ -181,189 +215,327 @@ function modalHeader(icon, title, fee, notice) {
       </div>`;
 }
 
+/* ─── HELB SHARED DATA ────────────────────────── */
+const HELB_COUNTIES = ['Nairobi','Mombasa','Kisumu','Nakuru','Eldoret','Nyeri','Meru','Kakamega','Kericho','Machakos','Kitui','Garissa','Kisii','Migori','Bungoma','Trans Nzoia','Uasin Gishu','Nandi','Baringo','Laikipia','Samburu','Isiolo','Marsabit','Mandera','Wajir','Tana River','Lamu','Kilifi','Kwale','Taita Taveta','Makueni','Kajiado','Muranga','Kirinyaga','Nyamira','Siaya','Vihiga','Busia','Homa Bay','Rachuonyo','Turkana','West Pokot','Elgeyo Marakwet','Nyandarua','Embu','Tharaka Nithi','Imenti'];
+const HELB_MARITAL   = ['Single','Married','Widowed','Divorced'];
+const HELB_RELIGION  = ['Christian','Muslim','Hindu','Other'];
+const HELB_EMP_STATUS= ['Employed','Self Employed','Unemployed','Student'];
+const HELB_YESNO     = ['Yes','No'];
+const HELB_BANK_OR_MPESA = ['Bank Account','M-Pesa'];
+const HELB_JUNIOR_BANKS  = ['KCB Bank','Equity Bank','Co-operative Bank','Postbank'];
+
+/* Checkbox helper (the field() helper only builds text/select inputs) */
+function checkboxField(id, label, required = true) {
+  return `<label class="doc-check">
+    <input type="checkbox" id="${id}" name="${id}" ${required ? 'required' : ''} />
+    <span>${label}</span>
+  </label>
+  <span class="field-error checkbox-err" id="${id}-err">Please confirm this before continuing</span>`;
+}
+
+/* ---- Sections shared by BOTH the "Has ID" and "No ID" HELB forms ---- */
+function helbSharedSections() {
+  return `
+    ${sectionTitle('Place of Birth')}
+    <div class="form-grid">
+      ${field('pobCounty','County','text',true,HELB_COUNTIES)}
+      ${field('pobConstituency','Constituency')}
+      ${field('pobWard','Ward')}
+      ${field('pobDivision','Division')}
+      ${field('pobLocation','Location')}
+      ${field('pobSubLocation','Sub Location')}
+    </div>
+    ${sectionTitle('Resident Details')}
+    <div class="form-grid">
+      ${field('nearestPrimarySchool','Nearest Primary School')}
+      ${field('estateVillage','Estate / Village')}
+      ${field('nearestRoad','Nearest Road Name')}
+      ${field('resCity','Town / City')}
+      ${field('resCounty','County','text',true,HELB_COUNTIES)}
+      ${field('resConstituency','Constituency')}
+      ${field('resWard','Ward')}
+      ${field('resDivision','Division')}
+      ${field('resLocation','Location')}
+      ${field('resSubLocation','Sub Location')}
+    </div>
+    ${sectionTitle('Primary School')}
+    <div class="form-grid">
+      ${field('primarySchoolName','School Name')}
+      ${field('primarySchoolType','School Type (Day/Boarding, Public/Private)')}
+      ${field('primaryExamYear','KCPE Exam Year')}
+      ${field('primaryIndexNo','Index Number')}
+      ${field('primaryCounty','County','text',true,HELB_COUNTIES)}
+      ${field('primaryConstituency','Constituency')}
+      ${field('primaryWard','Ward')}
+      ${field('primaryDivision','Division')}
+      ${field('primaryLocation','Location')}
+      ${field('primarySubLocation','Sub Location')}
+    </div>
+    ${sectionTitle('Secondary School')}
+    <div class="form-grid">
+      ${field('secSchoolName','School Name')}
+      ${field('secSchoolType','School Type (Day/Boarding, Public/Private)')}
+      ${field('secExamYear','KCSE Exam Year')}
+      ${field('secIndexNo','Index Number')}
+      ${field('secCounty','County','text',true,HELB_COUNTIES)}
+      ${field('secConstituency','Constituency')}
+      ${field('secWard','Ward')}
+      ${field('secDivision','Division')}
+      ${field('secLocation','Location')}
+      ${field('secSubLocation','Sub Location')}
+      ${field('sponsored','Sponsored?','text',true,HELB_YESNO)}
+    </div>
+    ${sectionTitle('University / Institution Details')}
+    <div class="form-grid">
+      ${field('uniName','Institution Name')}
+      ${field('uniCourse','Course')}
+      ${field('admissionNo','Registration / Admission Number')}
+      ${field('yearOfAdmission','Year of Admission')}
+      ${field('currentYear','Current Year of Study')}
+    </div>
+    ${sectionTitle('Guarantor 1')}
+    <div class="form-grid">
+      ${field('g1FullName','Full Name')}
+      ${field('g1IdNo','ID Number')}
+      ${field('g1Occupation','Occupation')}
+      ${field('g1EmpStatus','Employment Status','text',true,HELB_EMP_STATUS)}
+      ${field('g1EmployerName','Employer Name')}
+      ${field('g1EmployerPhone','Employer Phone','tel')}
+      ${field('g1EmployerEmail','Employer Email','email')}
+      ${field('g1StaffNo','Staff Number','text',false)}
+      ${field('g1Phone','Phone Number','tel')}
+    </div>
+    ${sectionTitle('Guarantor 2')}
+    <div class="form-grid">
+      ${field('g2FullName','Full Name')}
+      ${field('g2IdNo','ID Number')}
+      ${field('g2Occupation','Occupation')}
+      ${field('g2EmpStatus','Employment Status','text',true,HELB_EMP_STATUS)}
+      ${field('g2EmployerName','Employer Name')}
+      ${field('g2EmployerPhone','Employer Phone','tel')}
+      ${field('g2EmployerEmail','Employer Email','email')}
+      ${field('g2StaffNo','Staff Number','text',false)}
+      ${field('g2Phone','Phone Number','tel')}
+    </div>`;
+}
+
+/* ---- Personal Details: has-ID variant ---- */
+function helbPersonalWithId() {
+  return `
+    ${sectionTitle('Personal Details')}
+    <div class="form-grid">
+      ${field('fullName','Full Name')}
+      ${field('idNumber','ID Number')}
+      ${field('kraPin','KRA PIN')}
+      ${field('phone','Phone Number','tel')}
+      ${field('email','Email Address','email')}
+      ${field('religion','Religion','text',true,HELB_RELIGION)}
+      ${field('maritalStatus','Marital Status','text',true,HELB_MARITAL)}
+      ${field('physicalChallenges','Physical Challenges','text',true,HELB_YESNO)}
+      ${field('employmentStatus','Employment Status','text',true,HELB_EMP_STATUS)}
+      ${field('boxNumber','Box Number')}
+      ${field('postalCode','Postal Code')}
+      ${field('town','Town')}
+      ${field('county','County','text',true,HELB_COUNTIES)}
+      ${field('constituency','Constituency')}
+      ${field('ward','Ward')}
+      ${field('division','Division')}
+      ${field('location','Location')}
+      ${field('subLocation','Sub Location')}
+      ${field('coursePlaced','Course Placed')}
+    </div>`;
+}
+
+/* ---- Personal Details: no-ID / underage variant ---- */
+function helbPersonalNoId() {
+  return `
+    ${sectionTitle('Personal Details')}
+    <div class="form-grid">
+      ${field('kcseIndex','KCSE Index Number')}
+      ${field('fullName','Full Name')}
+      ${field('phone','Phone Number','tel')}
+      ${field('email','Email Address','email')}
+      ${field('religion','Religion','text',true,HELB_RELIGION)}
+      ${field('maritalStatus','Marital Status','text',true,HELB_MARITAL)}
+      ${field('physicalChallenges','Physical Challenges','text',true,HELB_YESNO)}
+      ${field('employmentStatus','Employment Status','text',true,HELB_EMP_STATUS)}
+      ${field('postalAddress','Postal Address')}
+      ${field('postalCode','Postal Code')}
+      ${field('town','Town')}
+      ${field('county','County','text',true,HELB_COUNTIES)}
+      ${field('constituency','Constituency')}
+      ${field('ward','Ward')}
+      ${field('division','Division')}
+      ${field('location','Location')}
+      ${field('subLocation','Sub Location')}
+      ${field('coursePlaced','Course Placed (Degree, Diploma, Certificate, etc.)')}
+    </div>
+    <div class="form-notice doc-notice">
+      <i class="fas fa-info-circle"></i>
+      This website does not accept document uploads. Please confirm below, then send these as photos/scans on WhatsApp once your application is submitted.
+    </div>
+    <div class="doc-checklist">
+      ${checkboxField('hasPassportPhoto','I have a Passport Photo ready to send on WhatsApp')}
+      ${checkboxField('hasBirthCert','I have a scanned copy of my Birth Certificate ready to send on WhatsApp')}
+      ${checkboxField('hasWaitingCard','I have a Waiting Card ready to send on WhatsApp (if applicable)', false)}
+    </div>`;
+}
+
+/* ---- Mode of Payment: has-ID variant ---- */
+function helbPaymentWithId() {
+  return `
+    ${sectionTitle('Mode of Payment')}
+    <div class="form-grid">
+      ${field('paymentMode','Preferred Mode','text',true,HELB_BANK_OR_MPESA)}
+      ${field('bankAcctNo','Bank Account Number','text',false)}
+      ${field('bankName','Bank Name','text',false)}
+      ${field('bankBranch','Bank Branch','text',false)}
+      ${field('mpesaNo','M-Pesa Phone Number','tel',false)}
+    </div>`;
+}
+
+/* ---- Mode of Payment: no-ID / underage variant (Junior Account only) ---- */
+function helbPaymentNoId() {
+  return `
+    ${sectionTitle('Mode of Payment — Junior Bank Account')}
+    <div class="form-notice doc-notice">
+      <i class="fas fa-info-circle"></i>
+      HELB requires a <strong>Junior Bank Account opened in the student's own name</strong> — with KCB, Equity, Co-operative Bank, or Postbank. Do not use a parent's account or a parent's ID to open it.
+    </div>
+    <div class="form-grid">
+      ${field('bankName','Bank Name','text',true,HELB_JUNIOR_BANKS)}
+      ${field('bankAcctNo','Account Number')}
+      ${field('bankBranch','Branch')}
+    </div>`;
+}
+
+/* ---- Assemble the full HELB form body for a given ID status ---- */
+function renderHelbFormBody(status) {
+  const personal = status === 'no' ? helbPersonalNoId() : helbPersonalWithId();
+  const payment  = status === 'no' ? helbPaymentNoId()  : helbPaymentWithId();
+  return `
+    <form id="serviceForm" onsubmit="submitForm(event,'helb')">
+    <input type="hidden" id="helbIdStatus" name="helbIdStatus" value="${status}" />
+    ${personal}
+    ${helbSharedSections()}
+    ${payment}
+    <button type="submit" class="modal-submit"><i class="fab fa-whatsapp"></i>Send Application via WhatsApp</button>
+    </form>`;
+}
+
+function switchHelbForm(status) {
+  const wrap = document.getElementById('helbFormWrap');
+  if (wrap) wrap.innerHTML = renderHelbFormBody(status);
+}
+
+/* ---- WhatsApp messages for each HELB variant ---- */
+function helbWaMessageWithId(data) {
+  return `*HELB FIRST-TIME APPLICATION*\n` +
+    `*Greatbridge Technologies*\n\n` +
+    `--- PERSONAL DETAILS (Has National ID) ---\n` +
+    `Name: ${data.fullName}\nID: ${data.idNumber}\nKRA PIN: ${data.kraPin}\n` +
+    `Phone: ${data.phone}\nEmail: ${data.email}\n` +
+    `Religion: ${data.religion}\nMarital Status: ${data.maritalStatus}\n` +
+    `Physical Challenges: ${data.physicalChallenges}\nEmployment: ${data.employmentStatus}\n` +
+    `Box No: ${data.boxNumber} | Postal: ${data.postalCode}\n` +
+    `Town: ${data.town} | County: ${data.county}\n` +
+    `Constituency: ${data.constituency} | Ward: ${data.ward}\n` +
+    `Division: ${data.division} | Location: ${data.location}\n` +
+    `Sub Location: ${data.subLocation}\nCourse Placed: ${data.coursePlaced}\n\n` +
+    helbSharedWaBlock(data) +
+    `--- PAYMENT MODE ---\n` +
+    `Mode: ${data.paymentMode}\nBank Acct: ${data.bankAcctNo}\n` +
+    `Bank: ${data.bankName} | Branch: ${data.bankBranch}\n` +
+    `M-Pesa: ${data.mpesaNo}\n\n` +
+    `Service Fee: Ksh 500 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+}
+
+function helbWaMessageNoId(data) {
+  return `*HELB FIRST-TIME APPLICATION (NO NATIONAL ID / UNDER-AGE)*\n` +
+    `*Greatbridge Technologies*\n\n` +
+    `--- PERSONAL DETAILS ---\n` +
+    `KCSE Index: ${data.kcseIndex}\nName: ${data.fullName}\nPhone: ${data.phone}\nEmail: ${data.email}\n` +
+    `Religion: ${data.religion}\nMarital Status: ${data.maritalStatus}\n` +
+    `Physical Challenges: ${data.physicalChallenges}\nEmployment: ${data.employmentStatus}\n` +
+    `Postal Address: ${data.postalAddress} | Postal Code: ${data.postalCode} | Town: ${data.town}\n` +
+    `County: ${data.county} | Constituency: ${data.constituency} | Ward: ${data.ward}\n` +
+    `Division: ${data.division} | Location: ${data.location} | Sub Location: ${data.subLocation}\n` +
+    `Course Placed: ${data.coursePlaced}\n\n` +
+    `--- DOCUMENTS TO BE SENT ON WHATSAPP ---\n` +
+    `Passport Photo Ready: ${data.hasPassportPhoto ? 'Yes' : 'No'}\n` +
+    `Birth Certificate Ready: ${data.hasBirthCert ? 'Yes' : 'No'}\n` +
+    `Waiting Card Ready: ${data.hasWaitingCard ? 'Yes' : 'Not applicable'}\n\n` +
+    helbSharedWaBlock(data) +
+    `--- MODE OF PAYMENT (Junior Bank Account) ---\n` +
+    `Bank: ${data.bankName}\nAccount Number: ${data.bankAcctNo}\nBranch: ${data.bankBranch}\n` +
+    `(Junior account in student's own name — not a parent's account/ID)\n\n` +
+    `Service Fee: Ksh 500 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+}
+
+/* Sections common to both WA messages */
+function helbSharedWaBlock(data) {
+  return `--- PLACE OF BIRTH ---\n` +
+    `County: ${data.pobCounty} | Constituency: ${data.pobConstituency}\n` +
+    `Ward: ${data.pobWard} | Division: ${data.pobDivision}\n` +
+    `Location: ${data.pobLocation} | Sub Location: ${data.pobSubLocation}\n\n` +
+    `--- RESIDENT DETAILS ---\n` +
+    `Nearest Primary: ${data.nearestPrimarySchool}\nEstate/Village: ${data.estateVillage}\n` +
+    `Road: ${data.nearestRoad} | Town/City: ${data.resCity} | County: ${data.resCounty}\n` +
+    `Constituency: ${data.resConstituency} | Ward: ${data.resWard} | Division: ${data.resDivision}\n` +
+    `Location: ${data.resLocation} | Sub Location: ${data.resSubLocation}\n\n` +
+    `--- PRIMARY SCHOOL ---\n` +
+    `School: ${data.primarySchoolName} | Type: ${data.primarySchoolType}\n` +
+    `KCPE Year: ${data.primaryExamYear} | Index: ${data.primaryIndexNo}\n` +
+    `County: ${data.primaryCounty} | Constituency: ${data.primaryConstituency}\n\n` +
+    `--- SECONDARY SCHOOL ---\n` +
+    `School: ${data.secSchoolName} | Type: ${data.secSchoolType}\n` +
+    `KCSE Year: ${data.secExamYear} | Index: ${data.secIndexNo}\n` +
+    `County: ${data.secCounty} | Constituency: ${data.secConstituency}\n` +
+    `Sponsored: ${data.sponsored}\n\n` +
+    `--- UNIVERSITY / INSTITUTION ---\n` +
+    `Institution: ${data.uniName}\nCourse: ${data.uniCourse}\n` +
+    `Reg/Adm No: ${data.admissionNo} | Year of Admission: ${data.yearOfAdmission}\n` +
+    `Current Year: ${data.currentYear}\n\n` +
+    `--- GUARANTOR 1 ---\n` +
+    `Name: ${data.g1FullName} | ID: ${data.g1IdNo}\n` +
+    `Occupation: ${data.g1Occupation} | Employment: ${data.g1EmpStatus}\n` +
+    `Employer: ${data.g1EmployerName} | Phone: ${data.g1EmployerPhone}\n` +
+    `Email: ${data.g1EmployerEmail} | Staff No: ${data.g1StaffNo}\n` +
+    `Guarantor Phone: ${data.g1Phone}\n\n` +
+    `--- GUARANTOR 2 ---\n` +
+    `Name: ${data.g2FullName} | ID: ${data.g2IdNo}\n` +
+    `Occupation: ${data.g2Occupation} | Employment: ${data.g2EmpStatus}\n` +
+    `Employer: ${data.g2EmployerName} | Phone: ${data.g2EmployerPhone}\n` +
+    `Email: ${data.g2EmployerEmail} | Staff No: ${data.g2StaffNo}\n` +
+    `Guarantor Phone: ${data.g2Phone}\n\n`;
+}
+
 /* ─── SERVICE CONFIGS ─────────────────────────── */
 function getServiceConfig(id) {
   const configs = {
     /* ---------- HELB ---------- */
     helb: {
       render: () => {
-        const counties = ['Nairobi','Mombasa','Kisumu','Nakuru','Eldoret','Nyeri','Meru','Kakamega','Kericho','Machakos','Kitui','Garissa','Kisii','Migori','Bungoma','Trans Nzoia','Uasin Gishu','Nandi','Baringo','Laikipia','Samburu','Isiolo','Marsabit','Mandera','Wajir','Tana River','Lamu','Kilifi','Kwale','Taita Taveta','Makueni','Kajiado','Muranga','Kirinyaga','Nyamira','Siaya','Vihiga','Busia','Homa Bay','Rachuonyo','Turkana','West Pokot','Elgeyo Marakwet','Nyandarua','Embu','Tharaka Nithi','Imenti'];
-        const marital  = ['Single','Married','Widowed','Divorced'];
-        const religion = ['Christian','Muslim','Hindu','Other'];
-        const empStatus= ['Employed','Self Employed','Unemployed','Student'];
-        const yesno    = ['Yes','No'];
-        const bankOrMpesa = ['Bank Account','M-Pesa'];
         return modalHeader('fa-graduation-cap','HELB First-Time Application','Ksh 500',
           'Fill in the details below. After submission, you will be redirected to WhatsApp where our team will guide you through the next steps. You only pay after your HELB application is successfully completed.') + `
-          <form id="serviceForm" onsubmit="submitForm(event,'helb')">
-          ${sectionTitle('Personal Details')}
-          <div class="form-grid">
-            ${field('fullName','Full Name')}
-            ${field('idNumber','ID Number')}
-            ${field('kraPin','KRA PIN')}
-            ${field('phone','Phone Number','tel')}
-            ${field('email','Email Address','email')}
-            ${field('religion','Religion','text',true,religion)}
-            ${field('maritalStatus','Marital Status','text',true,marital)}
-            ${field('physicalChallenges','Physical Challenges','text',true,yesno)}
-            ${field('employmentStatus','Employment Status','text',true,empStatus)}
-            ${field('boxNumber','Box Number')}
-            ${field('postalCode','Postal Code')}
-            ${field('town','Town')}
-            ${field('county','County','text',true,counties)}
-            ${field('constituency','Constituency')}
-            ${field('ward','Ward')}
-            ${field('division','Division')}
-            ${field('location','Location')}
-            ${field('subLocation','Sub Location')}
-            ${field('coursePlaced','Course Placed')}
+          <div class="id-status-toggle">
+            <label class="id-status-label">Do you have a National ID? *</label>
+            <div class="toggle-options">
+              <label class="toggle-option">
+                <input type="radio" name="helbIdStatusToggle" value="yes" checked onchange="switchHelbForm('yes')" />
+                <span>Yes, I have a National ID</span>
+              </label>
+              <label class="toggle-option">
+                <input type="radio" name="helbIdStatusToggle" value="no" onchange="switchHelbForm('no')" />
+                <span>No National ID / I am under 18</span>
+              </label>
+            </div>
           </div>
-          ${sectionTitle('Place of Birth')}
-          <div class="form-grid">
-            ${field('pobCounty','County','text',true,counties)}
-            ${field('pobConstituency','Constituency')}
-            ${field('pobLocation','Location')}
-            ${field('pobDivision','Division')}
-            ${field('pobWard','Ward')}
-            ${field('pobSubLocation','Sub Location')}
-          </div>
-          ${sectionTitle('Residential Details')}
-          <div class="form-grid">
-            ${field('nearestPrimarySchool','Nearest Primary School')}
-            ${field('estateVillage','Estate / Village')}
-            ${field('nearestRoad','Nearest Road Name')}
-            ${field('resCity','Town / City')}
-            ${field('resCounty','County','text',true,counties)}
-            ${field('resConstituency','Constituency')}
-            ${field('resDivision','Division')}
-            ${field('resWard','Ward')}
-            ${field('resLocation','Location')}
-            ${field('resSubLocation','Sub Location')}
-          </div>
-          ${sectionTitle('Primary School')}
-          <div class="form-grid">
-            ${field('primarySchoolName','School Name')}
-            ${field('primarySchoolType','School Type')}
-            ${field('primaryExamYear','Exam Year')}
-            ${field('primaryIndexNo','Index Number')}
-            ${field('primaryCounty','County','text',true,counties)}
-            ${field('primaryConstituency','Constituency')}
-            ${field('primaryWard','Ward')}
-            ${field('primaryDivision','Division')}
-            ${field('primaryLocation','Location')}
-            ${field('primarySubLocation','Sub Location')}
-          </div>
-          ${sectionTitle('Secondary School')}
-          <div class="form-grid">
-            ${field('secSchoolName','School Name')}
-            ${field('secSchoolType','School Type')}
-            ${field('secExamYear','Exam Year')}
-            ${field('secIndexNo','Index Number')}
-            ${field('secCounty','County','text',true,counties)}
-            ${field('secConstituency','Constituency')}
-            ${field('secWard','Ward')}
-            ${field('secDivision','Division')}
-            ${field('secLocation','Location')}
-            ${field('secSubLocation','Sub Location')}
-            ${field('sponsored','Sponsored?','text',true,yesno)}
-          </div>
-          ${sectionTitle('University Details')}
-          <div class="form-grid">
-            ${field('uniName','Institution Name')}
-            ${field('uniCourse','Course')}
-            ${field('admissionNo','Admission Number')}
-            ${field('yearOfAdmission','Year of Admission')}
-            ${field('currentYear','Current Year of Study')}
-          </div>
-          ${sectionTitle('Guarantor 1')}
-          <div class="form-grid">
-            ${field('g1FullName','Full Name')}
-            ${field('g1IdNo','ID Number')}
-            ${field('g1Occupation','Occupation')}
-            ${field('g1EmpStatus','Employment Status','text',true,empStatus)}
-            ${field('g1EmployerName','Employer Name')}
-            ${field('g1EmployerPhone','Employer Phone','tel')}
-            ${field('g1EmployerEmail','Employer Email','email')}
-            ${field('g1StaffNo','Staff Number')}
-            ${field('g1Phone','Phone Number','tel')}
-          </div>
-          ${sectionTitle('Guarantor 2')}
-          <div class="form-grid">
-            ${field('g2FullName','Full Name')}
-            ${field('g2IdNo','ID Number')}
-            ${field('g2Occupation','Occupation')}
-            ${field('g2EmpStatus','Employment Status','text',true,empStatus)}
-            ${field('g2EmployerName','Employer Name')}
-            ${field('g2EmployerPhone','Employer Phone','tel')}
-            ${field('g2EmployerEmail','Employer Email','email')}
-            ${field('g2StaffNo','Staff Number')}
-            ${field('g2Phone','Phone Number','tel')}
-          </div>
-          ${sectionTitle('Mode of Payment')}
-          <div class="form-grid">
-            ${field('paymentMode','Preferred Mode','text',true,bankOrMpesa)}
-            ${field('bankAcctNo','Bank Account Number',false,false)}
-            ${field('bankName','Bank Name','text',false)}
-            ${field('bankBranch','Bank Branch','text',false)}
-            ${field('mpesaNo','M-Pesa Phone Number','tel',false)}
-          </div>
-          <button type="submit" class="modal-submit"><i class="fab fa-whatsapp"></i>Send Application via WhatsApp</button>
-          </form>
+          <div id="helbFormWrap">${renderHelbFormBody('yes')}</div>
         </div>`;
       },
       waMessage: (data) => {
-        return `*HELB FIRST-TIME APPLICATION*\n` +
-          `*Greatbridge Technologies*\n\n` +
-          `--- PERSONAL DETAILS ---\n` +
-          `Name: ${data.fullName}\nID: ${data.idNumber}\nKRA PIN: ${data.kraPin}\n` +
-          `Phone: ${data.phone}\nEmail: ${data.email}\n` +
-          `Religion: ${data.religion}\nMarital Status: ${data.maritalStatus}\n` +
-          `Physical Challenges: ${data.physicalChallenges}\nEmployment: ${data.employmentStatus}\n` +
-          `Box No: ${data.boxNumber} | Postal: ${data.postalCode}\n` +
-          `Town: ${data.town} | County: ${data.county}\n` +
-          `Constituency: ${data.constituency} | Ward: ${data.ward}\n` +
-          `Division: ${data.division} | Location: ${data.location}\n` +
-          `Sub Location: ${data.subLocation}\nCourse Placed: ${data.coursePlaced}\n\n` +
-          `--- PLACE OF BIRTH ---\n` +
-          `County: ${data.pobCounty} | Const: ${data.pobConstituency}\n` +
-          `Location: ${data.pobLocation} | Division: ${data.pobDivision}\n` +
-          `Ward: ${data.pobWard} | Sub Location: ${data.pobSubLocation}\n\n` +
-          `--- RESIDENTIAL ---\n` +
-          `Nearest Primary: ${data.nearestPrimarySchool}\nEstate/Village: ${data.estateVillage}\n` +
-          `Road: ${data.nearestRoad} | City: ${data.resCity} | County: ${data.resCounty}\n` +
-          `Constituency: ${data.resConstituency} | Division: ${data.resDivision}\n` +
-          `Ward: ${data.resWard} | Location: ${data.resLocation}\n` +
-          `Sub Location: ${data.resSubLocation}\n\n` +
-          `--- PRIMARY SCHOOL ---\n` +
-          `School: ${data.primarySchoolName} | Type: ${data.primarySchoolType}\n` +
-          `Year: ${data.primaryExamYear} | Index: ${data.primaryIndexNo}\n` +
-          `County: ${data.primaryCounty} | Constituency: ${data.primaryConstituency}\n\n` +
-          `--- SECONDARY SCHOOL ---\n` +
-          `School: ${data.secSchoolName} | Type: ${data.secSchoolType}\n` +
-          `Year: ${data.secExamYear} | Index: ${data.secIndexNo}\n` +
-          `County: ${data.secCounty} | Constituency: ${data.secConstituency}\n` +
-          `Sponsored: ${data.sponsored}\n\n` +
-          `--- UNIVERSITY ---\n` +
-          `Institution: ${data.uniName}\nCourse: ${data.uniCourse}\n` +
-          `Adm No: ${data.admissionNo} | Year of Adm: ${data.yearOfAdmission}\n` +
-          `Current Year: ${data.currentYear}\n\n` +
-          `--- GUARANTOR 1 ---\n` +
-          `Name: ${data.g1FullName} | ID: ${data.g1IdNo}\n` +
-          `Occupation: ${data.g1Occupation} | Employment: ${data.g1EmpStatus}\n` +
-          `Employer: ${data.g1EmployerName} | Phone: ${data.g1EmployerPhone}\n` +
-          `Email: ${data.g1EmployerEmail} | Staff No: ${data.g1StaffNo}\n` +
-          `Guarantor Phone: ${data.g1Phone}\n\n` +
-          `--- GUARANTOR 2 ---\n` +
-          `Name: ${data.g2FullName} | ID: ${data.g2IdNo}\n` +
-          `Occupation: ${data.g2Occupation} | Employment: ${data.g2EmpStatus}\n` +
-          `Employer: ${data.g2EmployerName} | Phone: ${data.g2EmployerPhone}\n` +
-          `Email: ${data.g2EmployerEmail} | Staff No: ${data.g2StaffNo}\n` +
-          `Guarantor Phone: ${data.g2Phone}\n\n` +
-          `--- PAYMENT MODE ---\n` +
-          `Mode: ${data.paymentMode}\nBank Acct: ${data.bankAcctNo}\n` +
-          `Bank: ${data.bankName} | Branch: ${data.bankBranch}\n` +
-          `M-Pesa: ${data.mpesaNo}\n\n` +
-          `Service Fee: Ksh 500 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+        return data.helbIdStatus === 'no' ? helbWaMessageNoId(data) : helbWaMessageWithId(data);
       }
     },
 
@@ -694,7 +866,8 @@ function submitForm(e, serviceId) {
 
   inputs.forEach(input => {
     const errEl = document.getElementById(input.id + '-err');
-    if (!input.value.trim()) {
+    const filled = input.type === 'checkbox' ? input.checked : !!input.value.trim();
+    if (!filled) {
       input.classList.add('error');
       if (errEl) errEl.classList.add('show');
       valid = false;
@@ -705,21 +878,22 @@ function submitForm(e, serviceId) {
   });
 
   if (!valid) {
-    form.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    (form.querySelector('.error') || form.querySelector('input[type="checkbox"].error'))?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
   /* Collect all form data */
   const data = {};
   form.querySelectorAll('input, select, textarea').forEach(el => {
-    if (el.name) data[el.name] = el.value;
+    if (!el.name) return;
+    data[el.name] = el.type === 'checkbox' ? el.checked : el.value;
   });
 
   /* Build WhatsApp message */
   const config  = getServiceConfig(serviceId);
   const message = config.waMessage(data);
   const encoded = encodeURIComponent(message);
-  const waURL   = `https://wa.me/${PRIMARY_WA}?text=${encoded}`;
+  const waURL   = `https://wa.me/${getActiveWaNumber()}?text=${encoded}`;
 
   closeModal();
   window.open(waURL, '_blank');
@@ -730,6 +904,15 @@ document.addEventListener('input', e => {
   if (e.target.matches('input[required], select[required], textarea[required]')) {
     const errEl = document.getElementById(e.target.id + '-err');
     if (e.target.value.trim()) {
+      e.target.classList.remove('error');
+      if (errEl) errEl.classList.remove('show');
+    }
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('input[type="checkbox"][required]')) {
+    const errEl = document.getElementById(e.target.id + '-err');
+    if (e.target.checked) {
       e.target.classList.remove('error');
       if (errEl) errEl.classList.remove('show');
     }

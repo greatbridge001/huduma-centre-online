@@ -654,6 +654,32 @@ button { cursor: pointer; font-family: inherit; }
 .form-field .field-error { font-size: .75rem; color: var(--kenya-red); display: none; font-weight: 600; }
 .form-field .field-error.show { display: block; }
 .form-divider { font-size: .82rem; text-align: center; color: var(--text-muted); margin: 16px 0 8px; font-weight: 700; }
+/* ─── HELB ID-STATUS TOGGLE ──────────────────── */
+.id-status-toggle { padding: 0 28px; margin-bottom: 4px; }
+.id-status-label { display: block; font-size: .8rem; font-weight: 800; color: var(--kenya-black); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+.toggle-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.toggle-option {
+  display: flex; align-items: center; gap: 9px; cursor: pointer;
+  border: 2px solid var(--grey-100); border-radius: 8px; padding: 12px 14px;
+  font-size: .84rem; font-weight: 600; color: var(--text); transition: border-color var(--transition), background var(--transition);
+}
+.toggle-option:has(input:checked) { border-color: var(--kenya-green); background: #f0f7f3; color: var(--kenya-black); }
+.toggle-option input[type="radio"] { width: 17px; height: 17px; accent-color: var(--kenya-green); flex-shrink: 0; }
+@media(max-width:720px){ .toggle-options { grid-template-columns: 1fr; } }
+
+/* ─── DOCUMENT READINESS CHECKLIST ───────────── */
+.doc-notice { margin: 4px 0 16px; }
+.doc-checklist { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.doc-check {
+  display: flex; align-items: flex-start; gap: 10px; cursor: pointer;
+  border: 2px solid var(--grey-100); border-radius: 8px; padding: 12px 14px;
+  font-size: .84rem; font-weight: 600; color: var(--text); transition: border-color var(--transition), background var(--transition);
+}
+.doc-check:has(input:checked) { border-color: var(--kenya-green); background: #f0f7f3; color: var(--kenya-black); }
+.doc-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--kenya-green); flex-shrink: 0; margin-top: 1px; }
+.doc-check input[type="checkbox"].error { outline: 2px solid var(--kenya-red); outline-offset: 2px; border-radius: 4px; }
+.checkbox-err { margin: -6px 0 0 2px; }
+
 .modal-submit {
   width: 100%; background: #25d366; color: var(--kenya-white);
   border: none; border-radius: var(--radius); padding: 15px 24px;
