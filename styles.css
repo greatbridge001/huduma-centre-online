@@ -654,6 +654,10 @@ button { cursor: pointer; font-family: inherit; }
 .form-field .field-error { font-size: .75rem; color: var(--kenya-red); display: none; font-weight: 600; }
 .form-field .field-error.show { display: block; }
 .form-divider { font-size: .82rem; text-align: center; color: var(--text-muted); margin: 16px 0 8px; font-weight: 700; }
+/* ─── FORM HINT / GUARANTOR NOTE ─────────────── */
+.form-hint { padding: 0 28px 12px; font-size: .82rem; color: var(--grey-500); font-style: italic; }
+.guarantor-note { margin: 4px 0 16px; }
+
 /* ─── HELB ID-STATUS TOGGLE ──────────────────── */
 .id-status-toggle { padding: 0 28px; margin-bottom: 4px; }
 .id-status-label { display: block; font-size: .8rem; font-weight: 800; color: var(--kenya-black); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
