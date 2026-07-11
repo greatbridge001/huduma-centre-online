@@ -1,5 +1,5 @@
 /* =====================================================
-   GREATBRIDGE TECHNOLOGIES – STUDENT SERVICE PLATFORM
+   GREATBRIDGE HUDUMA – STUDENT SERVICE PLATFORM
    script.js — Interactions, Forms, WhatsApp Integration
 ===================================================== */
 
@@ -439,7 +439,7 @@ function helbWaMessageWithId(data) {
   }
 
   return `*HELB FIRST-TIME APPLICATION*\n` +
-    `*Greatbridge Technologies*\n\n` +
+    `*Greatbridge Huduma*\n\n` +
     `--- PERSONAL DETAILS (Has National ID) ---\n` +
     line('Name', data.fullName) + line('ID', data.idNumber) + line('KRA PIN', data.kraPin) +
     line('Phone', data.phone) + line('Email', data.email) +
@@ -451,12 +451,12 @@ function helbWaMessageWithId(data) {
     line('Course Placed', data.coursePlaced) + `\n` +
     helbSharedWaBlock(data) +
     paymentBlock + `\n` +
-    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Huduma Student Service Platform`;
 }
 
 function helbWaMessageNoId(data) {
   return `*HELB FIRST-TIME APPLICATION (NO NATIONAL ID / UNDER-AGE)*\n` +
-    `*Greatbridge Technologies*\n\n` +
+    `*Greatbridge Huduma*\n\n` +
     `--- PERSONAL DETAILS ---\n` +
     line('KCSE Index', data.kcseIndex) + line('Name', data.fullName) + line('Phone', data.phone) + line('Email', data.email) +
     line('Religion', data.religion) + line('Marital Status', data.maritalStatus) +
@@ -469,7 +469,7 @@ function helbWaMessageNoId(data) {
     `--- MODE OF PAYMENT (Junior Bank Account) ---\n` +
     line('Bank', data.bankName) + line('Account Number', data.bankAcctNo) + line('Branch', data.bankBranch) +
     `(Junior account in student's own name — not a parent's account/ID)\n\n` +
-    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Huduma Student Service Platform`;
 }
 
 /* Sections common to both WA messages */
@@ -553,11 +553,11 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*HELB APPEAL*\n*Greatbridge Technologies*\n\n` +
+        return `*HELB APPEAL*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nID: ${data.idNumber}\nPhone: ${data.phone}\n` +
           `Admission No: ${data.admissionNo}\nInstitution: ${data.institution}\n` +
           `Reason: ${data.appealReason}\nExplanation: ${data.appealExplanation}\n\n` +
-          `Pay After Service | Greatbridge Technologies`;
+          `Pay After Service | Greatbridge Huduma`;
       }
     },
 
@@ -588,7 +588,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*KUCCPS COURSE APPLICATION*\n*Greatbridge Technologies*\n\n` +
+        return `*KUCCPS COURSE APPLICATION*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nPhone: ${data.phone}\n` +
           `KCSE Index: ${data.kcseIndex}\nKCPE Index: ${data.kcpeIndex}\n` +
           `Birth Cert Entry: ${data.birthCertEntry}\nKCSE Year: ${data.kcseYear}\n\n` +
@@ -618,7 +618,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*INTER-INSTITUTION TRANSFER*\n*Greatbridge Technologies*\n\n` +
+        return `*INTER-INSTITUTION TRANSFER*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nPhone: ${data.phone}\n` +
           `KCSE Index: ${data.kcseIndex}\nKCPE/Birth Entry: ${data.kcpeIndex}\n` +
           `Desired Course: ${data.course}\nDesired Institution: ${data.institution}\n\n` +
@@ -642,7 +642,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*ADMISSION LETTER DOWNLOAD*\n*Greatbridge Technologies*\n\n` +
+        return `*ADMISSION LETTER DOWNLOAD*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nKCSE Index: ${data.kcseIndex}\n` +
           `Institution: ${data.institution}\nPhone: ${data.phone}\n\n` +
           `Fee: Ksh 50 (Pay After Service)`;
@@ -668,7 +668,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*KMTC SEP INTAKE APPLICATION*\n*Greatbridge Technologies*\n\n` +
+        return `*KMTC SEP INTAKE APPLICATION*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nPhone: ${data.phone}\nID/BC: ${data.idNumber}\n` +
           `KCSE Index: ${data.kcseIndex}\nKCSE Year: ${data.kcseYear}\n` +
           `Course: ${data.preferredCourse}\nCampus: ${data.preferredCampus}\n\n` +
@@ -696,7 +696,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*KRA PIN REGISTRATION*\n*Greatbridge Technologies*\n\n` +
+        return `*KRA PIN REGISTRATION*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nID: ${data.idNumber}\nEmail: ${data.email}\n` +
           `Phone: ${data.phone}\nTown: ${data.town}\nCounty: ${data.county}\n` +
           `District: ${data.district}\nPostal: ${data.postalAddress}\n\n` +
@@ -719,7 +719,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*KRA NIL RETURNS FILING*\n*Greatbridge Technologies*\n\n` +
+        return `*KRA NIL RETURNS FILING*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nID/PIN: ${data.idOrPin}\nPhone: ${data.phone}\n\n` +
           `Fee: Ksh 50 (Pay After Service)`;
       }
@@ -754,7 +754,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*SINGLE PARENT CERTIFICATE*\n*Greatbridge Technologies*\n\n` +
+        return `*SINGLE PARENT CERTIFICATE*\n*Greatbridge Huduma*\n\n` +
           `--- STUDENT ---\n` +
           `Name: ${data.fullName}\nID: ${data.idNumber}\nKCSE Index: ${data.kcseIndex}\n` +
           `Phone: ${data.phone}\nInstitution: ${data.institution}\nAdm No: ${data.admissionNo}\n` +
@@ -785,7 +785,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*SPONSORSHIP DOCUMENT*\n*Greatbridge Technologies*\n\n` +
+        return `*SPONSORSHIP DOCUMENT*\n*Greatbridge Huduma*\n\n` +
           `Student: ${data.studentName}\nInstitution: ${data.institution}\n` +
           `Adm No: ${data.admissionNo}\nSponsor: ${data.sponsorName}\n` +
           `Sponsor Contact: ${data.sponsorContact}\nPurpose: ${data.purpose}\n` +
@@ -809,7 +809,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*ONLINE COURSE ENROLMENT*\n*Greatbridge Technologies*\n\n` +
+        return `*ONLINE COURSE ENROLMENT*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nPhone: ${data.phone}\nEmail: ${data.email}\n` +
           `Course: ${data.courseInterested}\n\nFee: Ksh 999 (Pay After Service)`;
       }
@@ -831,7 +831,7 @@ function getServiceConfig(id) {
           </form></div>`;
       },
       waMessage: (data) => {
-        return `*FREE CAREER & BURSARY GUIDANCE REQUEST*\n*Greatbridge Technologies*\n\n` +
+        return `*FREE CAREER & BURSARY GUIDANCE REQUEST*\n*Greatbridge Huduma*\n\n` +
           `Name: ${data.fullName}\nPhone: ${data.phone}\n` +
           `County: ${data.county}\nInstitution: ${data.institution}\n\nThis is a FREE service.`;
       }
