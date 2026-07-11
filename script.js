@@ -69,7 +69,7 @@ function closeMobileNav() {
 
 /* ─── SEARCH ─────────────────────────────────── */
 const serviceIndex = [
-  { id:'helb',        label:'HELB First-Time Application',        desc:'First HELB loan application assistance',    fee:'Ksh 500',   icon:'fa-graduation-cap' },
+  { id:'helb',        label:'HELB First-Time Application (Band 1)', desc:'First HELB loan application assistance — Band 1', fee:'Ksh 1000',   icon:'fa-graduation-cap' },
   { id:'helb-appeal', label:'HELB Appeal',                        desc:'Appeal a rejected HELB application',        fee:'Custom',    icon:'fa-balance-scale' },
   { id:'kuccps',      label:'KUCCPS Course Application',          desc:'University placement course change',        fee:'Ksh 500',   icon:'fa-university' },
   { id:'transfer',    label:'Inter-Institution Transfer',         desc:'Transfer between universities',             fee:'Ksh 500',   icon:'fa-exchange-alt' },
@@ -77,7 +77,7 @@ const serviceIndex = [
   { id:'kmtc',        label:'KMTC SEP Intake Application',        desc:'KMTC Self-Sponsored Programme',             fee:'Ksh 500',   icon:'fa-hospital' },
   { id:'kra-pin',     label:'KRA PIN Registration',               desc:'Register for a KRA Personal ID Number',    fee:'Ksh 150',   icon:'fa-id-card' },
   { id:'nil-returns', label:'Filing Nil Returns',                 desc:'Annual KRA nil returns filing',             fee:'Ksh 50',    icon:'fa-file-invoice' },
-  { id:'single-parent',label:'Single Parent Certificate',         desc:'Certificate for HELB / bursary use',       fee:'Ksh 300/100',icon:'fa-users' },
+  { id:'single-parent',label:'Single Parent Certificate',         desc:'Certificate for HELB / bursary use',       fee:'Ksh 500/100',icon:'fa-users' },
   { id:'sponsorship', label:'Sponsorship Document',               desc:'Sponsorship letter, stamped or unstamped',  fee:'Ksh 400/100',icon:'fa-file-signature' },
   { id:'courses',     label:'Computer & IT Online Courses',       desc:'Web Dev, Graphic Design, Cybersecurity',   fee:'Ksh 999',   icon:'fa-laptop-code' },
   { id:'free-guidance',label:'Free Career & Bursary Guidance',   desc:'Free advice on bursaries and scholarships', fee:'FREE',      icon:'fa-compass' },
@@ -451,7 +451,7 @@ function helbWaMessageWithId(data) {
     line('Course Placed', data.coursePlaced) + `\n` +
     helbSharedWaBlock(data) +
     paymentBlock + `\n` +
-    `Service Fee: Ksh 500 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
 }
 
 function helbWaMessageNoId(data) {
@@ -469,7 +469,7 @@ function helbWaMessageNoId(data) {
     `--- MODE OF PAYMENT (Junior Bank Account) ---\n` +
     line('Bank', data.bankName) + line('Account Number', data.bankAcctNo) + line('Branch', data.bankBranch) +
     `(Junior account in student's own name — not a parent's account/ID)\n\n` +
-    `Service Fee: Ksh 500 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
+    `Service Fee: Ksh 1000 (Pay After Service)\nSubmitted via Greatbridge Technologies Student Service Platform`;
 }
 
 /* Sections common to both WA messages */
@@ -505,7 +505,7 @@ function getServiceConfig(id) {
     /* ---------- HELB ---------- */
     helb: {
       render: () => {
-        return modalHeader('fa-graduation-cap','HELB First-Time Application','Ksh 500',
+        return modalHeader('fa-graduation-cap','HELB First-Time Application (Band 1)','Ksh 1000',
           'Fill in as much as you know below — you can skip anything you\'re unsure about. After submission, you will be redirected to WhatsApp where our team will guide you through the rest. You only pay after your HELB application is successfully completed.') + `
           <div class="id-status-toggle">
             <label class="id-status-label">Do you have a National ID?</label>
@@ -728,7 +728,7 @@ function getServiceConfig(id) {
     /* ---------- SINGLE PARENT CERTIFICATE ---------- */
     'single-parent': {
       render: () => {
-        return modalHeader('fa-users','Single Parent Certificate','Stamped: Ksh 300 | Unstamped: Ksh 100',
+        return modalHeader('fa-users','Single Parent Certificate','Stamped: Ksh 500 | Unstamped: Ksh 100',
           'Required for HELB bursary applications. Choose whether you need the stamped or unstamped version.') + `
           <form id="serviceForm" onsubmit="submitForm(event,'single-parent')">
           ${sectionTitle('Student Details')}
@@ -748,7 +748,7 @@ function getServiceConfig(id) {
             ${field('parentPhone','Telephone Number','tel')}
             ${field('relationship','Relationship to Student','text',true,['Mother','Father','Guardian'])}
             ${field('parentMaritalStatus','Marital Status','text',true,['Single','Widowed','Divorced','Separated'])}
-            ${field('certType','Certificate Type','text',true,['Stamped (Ksh 300)','Unstamped (Ksh 100)'])}
+            ${field('certType','Certificate Type','text',true,['Stamped (Ksh 500)','Unstamped (Ksh 100)'])}
           </div>
           <button type="submit" class="modal-submit"><i class="fab fa-whatsapp"></i>Send Request via WhatsApp</button>
           </form></div>`;
