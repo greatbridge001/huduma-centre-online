@@ -231,6 +231,83 @@ function line(label, value) {
   return (value && String(value).trim()) ? `${label}: ${value}\n` : '';
 }
 
+/* ---- Type of Family: dynamic parent detail blocks ---- */
+function parentFieldsBlock(prefix, label) {
+  return `
+    ${sectionTitle(label)}
+    <div class="form-grid">
+      ${field(prefix + 'FullName','Full Name','text',false)}
+      ${field(prefix + 'IdNo','ID Number','text',false)}
+      ${field(prefix + 'Phone','Phone Number (registered under their name)','tel',false)}
+      <div class="form-field">
+        <label for="${prefix}Employed">Employed?</label>
+        <select id="${prefix}Employed" name="${prefix}Employed" onchange="toggleParentOccupation('${prefix}')">
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    <div id="${prefix}OccWrap"></div>`;
+}
+
+function toggleParentOccupation(prefix) {
+  const sel  = document.getElementById(prefix + 'Employed');
+  const wrap = document.getElementById(prefix + 'OccWrap');
+  if (!sel || !wrap) return;
+  wrap.innerHTML = sel.value === 'Yes'
+    ? `<div class="form-grid">${field(prefix + 'Occupation','Occupation','text',false)}</div>`
+    : '';
+}
+
+function renderFamilyDetails(type) {
+  if (type === 'Both Parents Alive') {
+    return parentFieldsBlock('father', "Father's Details") + parentFieldsBlock('mother', "Mother's Details");
+  }
+  if (type === 'Single Parent') {
+    return parentFieldsBlock('parent', "Parent's Details");
+  }
+  if (type === 'One Parent Deceased') {
+    return parentFieldsBlock('survivingParent', "Surviving Parent's Details");
+  }
+  return ''; /* Orphan or not yet selected: no parent fields needed */
+}
+
+function switchFamilyType(type) {
+  const wrap = document.getElementById('familyDetailsWrap');
+  if (wrap) wrap.innerHTML = renderFamilyDetails(type);
+}
+
+function helbFamilySection() {
+  return `
+    ${sectionTitle('Type of Family')}
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="familyType">Type of Family (Choose one)</label>
+        <select id="familyType" name="familyType" onchange="switchFamilyType(this.value)">
+          <option value="">Select</option>
+          <option value="Single Parent">Single Parent</option>
+          <option value="Both Parents Alive">Both Parents Alive</option>
+          <option value="Orphan">Orphan</option>
+          <option value="One Parent Deceased">One Parent Deceased</option>
+        </select>
+      </div>
+    </div>
+    <div id="familyDetailsWrap"></div>`;
+}
+
+/* Prints a parent's block in the WA message only if at least one field was filled */
+function parentWaLines(prefix, label, data) {
+  const has = data[prefix + 'FullName'] || data[prefix + 'IdNo'] || data[prefix + 'Phone'] || data[prefix + 'Employed'];
+  if (!has) return '';
+  return `${label}:\n` +
+    line('Full Name', data[prefix + 'FullName']) +
+    line('ID Number', data[prefix + 'IdNo']) +
+    line('Phone Number', data[prefix + 'Phone']) +
+    line('Employed', data[prefix + 'Employed']) +
+    line('Occupation', data[prefix + 'Occupation']);
+}
+
 /* ---- Sections shared by BOTH the "Has ID" and "No ID" HELB forms ---- */
 function helbSharedSections() {
   return `
@@ -279,6 +356,7 @@ function helbSharedSections() {
       ${field('yearOfAdmission','Year of Admission','text',false)}
       ${field('currentYear','Current Year of Study','text',false)}
     </div>
+    ${helbFamilySection()}
     ${sectionTitle('Guarantors')}
     <div class="form-notice guarantor-note">
       <i class="fas fa-info-circle"></i>
@@ -493,6 +571,12 @@ function helbSharedWaBlock(data) {
     line('Institution', data.uniName) + line('Course', data.uniCourse) +
     line('Reg/Adm No', data.admissionNo) + line('Year of Admission', data.yearOfAdmission) +
     line('Current Year', data.currentYear) + `\n` +
+    `--- TYPE OF FAMILY ---\n` +
+    line('Family Type', data.familyType) +
+    parentWaLines('father', "Father's Details", data) +
+    parentWaLines('mother', "Mother's Details", data) +
+    parentWaLines('parent', "Parent's Details", data) +
+    parentWaLines('survivingParent', "Surviving Parent's Details", data) + `\n` +
     `--- GUARANTOR 1 ---\n` +
     line('Name', data.g1FullName) + line('ID', data.g1IdNo) + line('Phone', data.g1Phone) + line('Employed', data.g1EmpStatus) + `\n` +
     `--- GUARANTOR 2 ---\n` +
